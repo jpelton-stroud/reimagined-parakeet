@@ -1,3 +1,10 @@
+export interface ApiConfigBlock {
+  key: string;
+  baseURI: string;
+  memberEndpoint: string;
+  billEndpoint: string;
+}
+
 export interface Legislature extends Metadata {
   name: {
     short: string;
@@ -9,12 +16,7 @@ export interface Legislature extends Metadata {
     upper: string;
     lower: string;
   };
-  api: {
-    key: string;
-    baseURI: string;
-    memberEndpoint: string;
-    billEndpoint: string;
-  };
+  api: ApiConfigBlock;
 }
 
 export interface Legislator extends Metadata {
