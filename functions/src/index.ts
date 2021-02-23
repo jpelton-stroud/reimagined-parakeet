@@ -18,8 +18,8 @@ export const updateLegislature = functions.https.onRequest(async (req, res) => {
 
   if (doc.exists) {
     let lInfo: Legislature = doc.data() as Legislature;
-    let members = ny.getMembers(lInfo.api, 2021);
-    console.log(members);
+    let members = await ny.getMembers(lInfo.api, 2021);
+    console.log('members retrieved!\n\n', members);
   } else console.log("Legislature doesn't exist!");
   res.send('done');
 });
