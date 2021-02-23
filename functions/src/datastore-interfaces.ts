@@ -22,13 +22,13 @@ export interface Legislature extends Metadata {
 export interface Legislator extends Metadata {
   name: {
     first: string;
-    middle?: string;
+    middle: string;
     last: string;
-    suffix?: string;
+    suffix: string;
   };
   chamber?: string;
   district: number;
-  imageURL: null | string;
+  imageURL: string;
 }
 
 export interface Bill extends Metadata {
@@ -46,6 +46,10 @@ export interface Bill extends Metadata {
 }
 
 interface Metadata {
-  identifiers: [];
+  identifiers: {
+    desc: string;
+    value: number | string;
+    source: string;
+  }[];
   updated: string;
 }
