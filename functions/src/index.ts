@@ -10,16 +10,24 @@ const db = admin.firestore();
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
 
-export const updateLegislature = functions.https.onRequest(async (req, res) => {
-  const doc = await db
-    .collection('legislatures')
-    .doc('I4M0jPCqCVx2HttkbCfo') // TODO: refactor for Legislatures other than NY
-    .get();
+export const updateNyLegislators = functions.https.onRequest(
+  async (req, res) => {
+    const legislatureDocRef = db
+      .collection('legislatures')
+      .doc('I4M0jPCqCVx2HttkbCfo');
 
-  if (doc.exists) {
-    let lInfo: Legislature = doc.data() as Legislature;
-    let members = await ny.getMembers(lInfo.api, 2021);
-    console.log('members retrieved!\n\n', members);
-  } else console.log("Legislature doesn't exist!");
-  res.send('done');
-});
+    const legislatureDoc = await legislatureDocRef.get();
+
+    if (legislatureDoc.exists) {
+      const legislatureData: Legislature = legislatureDoc.data() as Legislature;
+      const members = await ny.getMembers(legislatureData.api, 2021);
+      members.forEach(
+        async (e) => await legislatureDocRef.collection('legislators').add(e)
+      );
+      res.send('NY legislature update successful');
+    } else {
+      console.log("Legislature doesn't exist!");
+      res.send('NY legislature update failed');
+    }
+  }
+);
