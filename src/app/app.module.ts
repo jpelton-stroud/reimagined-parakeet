@@ -8,9 +8,10 @@ import { AngularFirestoreModule, SETTINGS } from '@angular/fire/firestore';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ListViewComponent } from './list-view/list-view.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, ListViewComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
