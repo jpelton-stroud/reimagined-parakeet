@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "serve": "npm run build && firebase emulators:start",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore",
     "format": "npx prettier --write .",
     "lint": "eslint --ext .js,.ts .",
     "build": "npm run format && npm run lint && tsc",
