@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-list-view',
@@ -6,6 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./list-view.component.sass'],
 })
 export class ListViewComponent implements OnInit {
+  @Input() displayedColumns: string[] = [];
   @Input() items: any[] = [];
 
   constructor() {}

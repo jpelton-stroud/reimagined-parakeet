@@ -1,5 +1,14 @@
 <h1>{{ title }}</h1>
+<br />
 <h2>Legislation</h2>
-<app-list-view [items]="legislation"></app-list-view>
+<app-list-view
+  [items]="legislation"
+  [displayedColumns]="['name', 'identifier']"
+></app-list-view>
+<br />
+<br />
 <h2>Legislators</h2>
-<app-list-view [items]="legislators"></app-list-view>
+<app-list-view
+  [items]="legislators"
+  [displayedColumns]="['name', 'chamber']"
+></app-list-view>
