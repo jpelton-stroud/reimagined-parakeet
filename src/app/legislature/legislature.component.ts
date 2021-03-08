@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
-interface test {
-  name: string;
-}
+import { Legislation } from '../legislation';
+import { Legislator } from '../legislator';
 
 @Component({
   selector: 'app-legislature',
@@ -12,17 +11,17 @@ interface test {
   styleUrls: ['./legislature.component.sass'],
 })
 export class LegislatureComponent implements OnInit {
-  public legislationCollection$: Observable<test[]>;
-  public legislatorCollection$: Observable<test[]>;
-  public legislation: test[] = [];
-  public legislators: test[] = [];
+  public legislationCollection$: Observable<Legislation[]>;
+  public legislatorCollection$: Observable<Legislator[]>;
+  public legislation: Legislation[] = [];
+  public legislators: Legislator[] = [];
 
   constructor(public readonly db: AngularFirestore) {
     this.legislationCollection$ = this.db
-      .collection<test>('legislation')
+      .collection<Legislation>('legislation')
       .valueChanges();
     this.legislatorCollection$ = this.db
-      .collection<test>('legislators')
+      .collection<Legislator>('legislators')
       .valueChanges();
     this.legislationCollection$.subscribe((data) => (this.legislation = data));
     this.legislatorCollection$.subscribe((data) => (this.legislators = data));

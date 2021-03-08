@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
-interface test {
-  name: string;
-  identifier: string;
-  sponsors: [];
-}
+import { Legislation } from '../legislation';
 
 @Component({
   selector: 'app-legislation',
@@ -16,8 +11,8 @@ interface test {
   styleUrls: ['./legislation.component.sass'],
 })
 export class LegislationComponent implements OnInit {
-  public legislationCollection$: Observable<test[]>;
-  public bill: test = {
+  public legislationCollection$: Observable<Legislation[]>;
+  public bill: Legislation = {
     name: `bill number not found.
       If your internet connection is slow it may show up in a sec, 
       otherwise please check the bill number & try again`,
@@ -30,7 +25,7 @@ export class LegislationComponent implements OnInit {
     private route: ActivatedRoute
   ) {
     this.legislationCollection$ = this.db
-      .collection<test>('legislation', (ref) =>
+      .collection<Legislation>('legislation', (ref) =>
         ref.where(
           'identifier',
           '==',
