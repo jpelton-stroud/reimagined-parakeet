@@ -14,9 +14,11 @@ import { MatTableModule } from '@angular/material/table';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ListViewComponent } from './list-view/list-view.component';
+import { LegislationComponent } from './legislation/legislation.component';
+import { LegislatureComponent } from './legislature/legislature.component';
 
 @NgModule({
-  declarations: [AppComponent, ListViewComponent],
+  declarations: [AppComponent, ListViewComponent, LegislationComponent, LegislatureComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
