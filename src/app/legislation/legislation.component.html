@@ -1,1 +1,10 @@
-<p>legislation works!</p>
+<h2>
+  {{ bill.identifier }}
+  {{ bill.name }}
+</h2>
+<br />
+<h3>Sponsors</h3>
+<app-list-view
+  [items]="bill.sponsors"
+  [displayedColumns]="['name', 'date']"
+></app-list-view>
