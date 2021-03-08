@@ -16,9 +16,10 @@ import { AppComponent } from './app.component';
 import { ListViewComponent } from './list-view/list-view.component';
 import { LegislationComponent } from './legislation/legislation.component';
 import { LegislatureComponent } from './legislature/legislature.component';
+import { LegislatorComponent } from './legislator/legislator.component';
 
 @NgModule({
-  declarations: [AppComponent, ListViewComponent, LegislationComponent, LegislatureComponent],
+  declarations: [AppComponent, ListViewComponent, LegislationComponent, LegislatureComponent, LegislatorComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -17,7 +17,7 @@ export class LegislationComponent implements OnInit {
       If your internet connection is slow it may show up in a sec, 
       otherwise please check the bill number & try again`,
     identifier: '',
-    sponsors: [],
+    sponsorships: [],
   };
 
   constructor(
