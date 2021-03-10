@@ -1,28 +1,37 @@
+import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-// import * as ny from './ny/functions';
+import * as ny from './ny/functions';
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
+admin.initializeApp();
+const db = admin.firestore();
+
 export const test = functions.https.onRequest(async (request, response) => {
-  // functions.logger.info(`test begins`, {
-  //   structuredData: true,
-  // });
-
-  // try {
-  //   const data = await ny.getUpdatedMembers();
-
-  //   functions.logger.debug('', data);
-  //   functions.logger.info(`try block`, {
-  //     structuredData: true,
-  //   });
-  // } catch (error) {
-  //   functions.logger.info(`catch block`, {
-  //     structuredData: true,
-  //   });
-
-  //   functions.logger.error('function error', error);
-  // }
+  try {
+  } catch (error) {
+    functions.logger.error('function error', error);
+  }
 
   response.send(`test run completed @ ${new Date()}`);
 });
+
+export const updateLegislators = functions.https.onRequest(
+  async (request, response) => {
+    try {
+      const LegislatorsRef = db.collection('legislators');
+      const updatedLegislators = await ny.getUpdatedMembers();
+
+      updatedLegislators.forEach(async (e) => {
+        const snapshot = await LegislatorsRef.where(
+          'identifier',
+          '==',
+          e.identifier
+        ).get();
+        if (snapshot.empty) LegislatorsRef.add(e);
+      });
+    } catch (error) {
+      functions.logger.error('function error', error);
+    }
+
+    response.send(`test run completed @ ${new Date()}`);
+  }
+);
