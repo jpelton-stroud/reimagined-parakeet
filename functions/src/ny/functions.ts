@@ -3,7 +3,7 @@ import { APIKEY } from './api-key';
 import * as API from './types/nysenate-api';
 
 import type { Options } from 'got';
-import type { Legislator } from '../../../src/app/legislator';
+import type { Legislator } from '../app/legislator';
 
 const options: Options = {
   prefixUrl: 'https://legislation.nysenate.gov',

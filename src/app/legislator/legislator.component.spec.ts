@@ -8,9 +8,8 @@ describe('LegislatorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LegislatorComponent ]
-    })
-    .compileComponents();
+      declarations: [LegislatorComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

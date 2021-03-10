@@ -19,7 +19,13 @@ import { LegislatureComponent } from './legislature/legislature.component';
 import { LegislatorComponent } from './legislator/legislator.component';
 
 @NgModule({
-  declarations: [AppComponent, ListViewComponent, LegislationComponent, LegislatureComponent, LegislatorComponent],
+  declarations: [
+    AppComponent,
+    ListViewComponent,
+    LegislationComponent,
+    LegislatureComponent,
+    LegislatorComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,

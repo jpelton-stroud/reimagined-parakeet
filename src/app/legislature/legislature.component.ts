@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
-import { Legislation } from '../legislation';
-import { Legislator } from '../legislator';
+import { Legislation } from '../types/legislation';
+import { Legislator } from '../types/legislator';
 
 @Component({
   selector: 'app-legislature',

@@ -1,10 +1,10 @@
 {
   "name": "functions",
   "scripts": {
-    "watch:build": "tsc --watch",
-    "serve": "firebase emulators:start --import=EMU_DATA --export-on-exit",
-    "lint": "npx prettier --write . && eslint --ext .js,.ts . --fix",
-    "build": "tsc",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore",
+    "format": "npx prettier --write .",
+    "lint": "eslint --ext .js,.ts .",
+    "build": "npm run format && npm run lint && tsc",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
