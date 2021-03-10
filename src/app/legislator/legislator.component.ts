@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
-import { Legislator } from '../legislator';
+import { Legislator } from '../types/legislator';
 
 @Component({
   selector: 'app-legislator',
