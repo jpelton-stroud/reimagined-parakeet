@@ -5,21 +5,17 @@ import * as API from './types/nysenate-api';
 import type { Options } from 'got';
 import type { Legislator } from '../app/legislator';
 
-const options: Options = {
+let options: Options = {
   prefixUrl: 'https://legislation.nysenate.gov',
   responseType: 'json',
   resolveBodyOnly: true,
-  searchParams: new URLSearchParams([
-    ['key', APIKEY],
-    ['full', 'true'],
-    ['limit', '1000'],
-  ]),
 };
 
 export async function getUpdatedMembers() {
+  options.searchParams = `key=${APIKEY}&full=true&limit=1000`;
   try {
     const mapped: Legislator[] = [];
-    const res = await got(`api/3/members?key=${APIKEY}`, options);
+    const res = await got(`api/3/members`, options);
     if (!API.isSuccess(res)) throw new Error('API Response was Error');
     if (!API.isItemsList<API.Member>(res.result))
       throw new Error('API Response is not a List');
