@@ -5,5 +5,6 @@ export interface Shared {
     date: string;
     name: string;
     identifier: string;
+    version: string;
   }[];
 }
