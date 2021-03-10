@@ -4,6 +4,8 @@ import * as API from './types/nysenate-api';
 
 import type { Options } from 'got';
 import type { Legislator } from '../app/legislator';
+import { Legislation } from '../app/legislation';
+import { Sponsorship } from '../app/shared';
 
 let options: Options = {
   prefixUrl: 'https://legislation.nysenate.gov',
@@ -34,24 +36,55 @@ export async function getUpdatedMembers() {
 function mapToLegislator(m: API.Member): Legislator {
   return {
     chamber: m.chamber,
-    identifier: `${m.shortName}-${m.chamber}-${m.memberId}-${m.sessionMemberId}`,
+    identifier: generateMemberId(m),
     name: m.fullName,
     sponsorships: [],
   };
 }
 
-export async function getUpdatedBill(id: string) {
-  console.log(`getting ${id}`);
+function generateMemberId(m: API.Member): string {
+  return `${m.shortName}-${m.chamber}-${m.memberId}-${m.sessionMemberId}`;
+}
+
+export async function getBillData(oldBill: Legislation) {
+  console.log(`getting ${oldBill.identifier}`);
   options.searchParams = `key=${APIKEY}`;
 
-  const idParts = id.split('-');
+  const idParts = oldBill.identifier.split('-');
   const apiPath = `api/3/bills/${idParts.pop()}/${idParts.pop()}`;
   try {
     const res = await got(apiPath, options);
     if (!API.isSuccess(res)) throw new Error('API Response was Error');
-
-    console.log(res.result);
+    if (!API.isBill(res.result)) throw new Error('API Response not a bill');
+    return mapToLegislation(res.result, oldBill.name);
   } catch (error) {
     console.error(error);
+    throw new Error('API Call failed');
   }
+}
+
+function mapToLegislation(e: API.Bill, n: string): Legislation {
+  let sponsors: Sponsorship[] = [
+    mapToSponsorship(e.sponsor.member, e.activeVersion),
+  ];
+  e.amendments.items[e.activeVersion].coSponsors.items.forEach((e2) => {
+    sponsors.push(mapToSponsorship(e2, e.activeVersion));
+  });
+  return {
+    creator_id: generateMemberId(e.sponsor.member),
+    identifier: e.basePrintNoStr,
+    title: e.title,
+    sponsorships: sponsors,
+    name: n,
+    version: e.activeVersion,
+  };
+}
+
+function mapToSponsorship(e: API.Member, v: string): Sponsorship {
+  return {
+    date: new Date().toISOString(),
+    identifier: generateMemberId(e),
+    name: e.fullName,
+    version: v,
+  };
 }
