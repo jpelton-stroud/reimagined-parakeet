@@ -18,6 +18,9 @@ export class LegislationComponent implements OnInit {
       otherwise please check the bill number & try again`,
     identifier: '',
     sponsorships: [],
+    title: '',
+    creator_id: '',
+    version: '',
   };
 
   constructor(
