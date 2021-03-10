@@ -7,7 +7,7 @@ import type { Legislator } from '../app/legislator';
 import { Legislation } from '../app/legislation';
 import { Sponsorship } from '../app/shared';
 
-let options: Options = {
+const options: Options = {
   prefixUrl: 'https://legislation.nysenate.gov',
   responseType: 'json',
   resolveBodyOnly: true,
@@ -64,7 +64,7 @@ export async function getBillData(oldBill: Legislation) {
 }
 
 function mapToLegislation(e: API.Bill, n: string): Legislation {
-  let sponsors: Sponsorship[] = [
+  const sponsors: Sponsorship[] = [
     mapToSponsorship(e.sponsor.member, e.activeVersion),
   ];
   e.amendments.items[e.activeVersion].coSponsors.items.forEach((e2) => {

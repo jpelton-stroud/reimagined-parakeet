@@ -24,5 +24,6 @@ module.exports = {
   rules: {
     "require-jsdoc": "off",
     "no-unused-vars": "off",
+    camelcase: "off",
   },
 };
