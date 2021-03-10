@@ -9,16 +9,14 @@ const options: Options = {
   prefixUrl: 'https://legislation.nysenate.gov',
   responseType: 'json',
   resolveBodyOnly: true,
-  // searchParams: new URLSearchParams([
-  //   ['key', APIKEY],
-  //   ['full', 'true'],
-  //   ['limit', '3'],
-  // ]),
+  searchParams: new URLSearchParams([
+    ['key', APIKEY],
+    ['full', 'true'],
+    ['limit', '1000'],
+  ]),
 };
 
 export async function getUpdatedMembers() {
-  console.debug('getUpdatedMembers called');
-
   try {
     const mapped: Legislator[] = [];
     const res = await got(`api/3/members?key=${APIKEY}`, options);
@@ -30,8 +28,6 @@ export async function getUpdatedMembers() {
       mapped.push(mapToLegislator(e));
     });
 
-    console.log(mapped, 'before return');
-
     return mapped;
   } catch (error) {
     console.error(error);
@@ -40,11 +36,9 @@ export async function getUpdatedMembers() {
 }
 
 function mapToLegislator(m: API.Member): Legislator {
-  console.debug('mapToLegislator called');
-
   return {
     chamber: m.chamber,
-    identifier: m.sessionMemberId.toString(),
+    identifier: `${m.shortName}-${m.chamber}-${m.memberId}-${m.sessionMemberId}`,
     name: m.fullName,
     sponsorships: [],
   };
