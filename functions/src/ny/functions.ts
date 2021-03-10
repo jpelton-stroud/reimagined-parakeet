@@ -39,3 +39,19 @@ function mapToLegislator(m: API.Member): Legislator {
     sponsorships: [],
   };
 }
+
+export async function getUpdatedBill(id: string) {
+  console.log(`getting ${id}`);
+  options.searchParams = `key=${APIKEY}`;
+
+  const idParts = id.split('-');
+  const apiPath = `api/3/bills/${idParts.pop()}/${idParts.pop()}`;
+  try {
+    const res = await got(apiPath, options);
+    if (!API.isSuccess(res)) throw new Error('API Response was Error');
+
+    console.log(res.result);
+  } catch (error) {
+    console.error(error);
+  }
+}

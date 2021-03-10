@@ -7,6 +7,7 @@ const db = admin.firestore();
 
 export const test = functions.https.onRequest(async (request, response) => {
   try {
+    await ny.getUpdatedBill('S11-2021');
   } catch (error) {
     functions.logger.error('function error', error);
   }
