@@ -37,8 +37,11 @@ export class LegislationComponent implements OnInit {
       )
       .valueChanges();
     this.legislationCollection$.subscribe((data) => {
-      if (data.length > 1) throw new Error('too many results');
-      else this.bill = data[0];
+      if (data.length > 1) {
+        throw new Error('too many results');
+      } else {
+        this.bill = data[0];
+      }
     });
   }
 

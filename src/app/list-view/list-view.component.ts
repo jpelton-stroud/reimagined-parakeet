@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 export class ListViewComponent implements OnInit {
   @Input() displayedColumns: string[] = [];
   @Input() items: any[] = [];
-  @Input() linkHeader: string = '';
+  @Input() linkHeader = '';
 
   constructor() {}
 
