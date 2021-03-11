@@ -1,2 +1,6 @@
 # Ignore artifacts
 lib
+dist
+*.log
+EMU_DATA
+.firebase
