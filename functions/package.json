@@ -3,7 +3,7 @@
   "scripts": {
     "serve": "npm run build && firebase emulators:start --import=EMU_DATA --export-on-exit",
     "format": "npx prettier --write .",
-    "lint": "eslint --ext .js,.ts .",
+    "lint": "eslint --ext .ts .",
     "build": "npm run lint && tsc",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
@@ -13,7 +13,7 @@
   "engines": {
     "node": "14"
   },
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "dependencies": {
     "firebase-admin": "^9.2.0",
     "firebase-functions": "^3.11.0",
