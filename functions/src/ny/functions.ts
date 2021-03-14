@@ -1,9 +1,9 @@
 import got from 'got';
+import { Options } from 'got';
+
 import { APIKEY } from './api-key';
 import * as API from './types/nysenate-api';
-
-import type { Options } from 'got';
-import type { Legislator } from '../app/legislator';
+import { Legislator } from '../app/legislator';
 import { Legislation } from '../app/legislation';
 import { Sponsorship } from '../app/shared';
 
