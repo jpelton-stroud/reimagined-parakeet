@@ -10,7 +10,7 @@ export const test = functions.https.onRequest(async (request, response) => {
   try {
     const colRef = db.collection('legislation');
     const snapshot = await colRef.get();
-    if (snapshot.empty) response.send(`no bills to update!`);
+    if (snapshot.empty) throw new Error(`no bills to update!`);
 
     snapshot.forEach(async (doc) => {
       const oldBill: Legislation = doc.data() as Legislation;
