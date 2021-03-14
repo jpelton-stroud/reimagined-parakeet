@@ -1,6 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import { Legislation } from './app/legislation';
+import { Sponsorship } from './app/shared';
 import * as ny from './ny/functions';
 
 admin.initializeApp();
@@ -27,10 +28,39 @@ export const test = functions.https.onRequest(async (request, response) => {
 export const getNewBillData = functions.firestore
   .document('legislation/{docId}')
   .onCreate(async (snapshot, context) => {
-    const newBill = snapshot.data() as Legislation;
-    const newBillData = await ny.getBillData(newBill);
-    db.doc(`legislation/${snapshot.id}`).set(newBillData);
+    try {
+      const bill = snapshot.data() as Legislation;
+      const billData = await ny.getBillData(bill);
+      const promises: Promise<any>[] = [
+        db.doc(`legislation/${snapshot.id}`).set(billData),
+      ];
+
+      const sponsorship: Sponsorship = {
+        name: bill.name,
+        identifier: bill.identifier,
+        version: billData.version,
+        date: '',
+      };
+
+      billData.sponsorships.forEach((sponsor: Sponsorship) => {
+        const id: string = `legislators/${sponsor.identifier}`;
+        promises.push(updateSponsorships(id, sponsorship));
+      });
+
+      await Promise.all(promises);
+    } catch (error) {
+      functions.logger.error(error);
+    }
   });
+
+async function updateSponsorships(
+  id: string,
+  sponsorship: Sponsorship
+): Promise<any> {
+  return db.doc(id).update({
+    sponsorships: admin.firestore.FieldValue.arrayUnion(sponsorship),
+  });
+}
 
 export const updateLegislators = functions.https.onRequest(
   async (request, response) => {
