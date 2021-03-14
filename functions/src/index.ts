@@ -34,8 +34,8 @@ export const getNewBillData = functions.firestore
 
 export const updateLegislators = functions.https.onRequest(
   async (request, response) => {
-    const promises: Promise<any>[] = [];
     try {
+      const promises: Promise<any>[] = [];
       const updatedLegislators = await ny.getUpdatedMembers();
 
       updatedLegislators.forEach(async (e) => {
