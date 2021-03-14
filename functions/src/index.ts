@@ -34,18 +34,15 @@ export const getNewBillData = functions.firestore
 
 export const updateLegislators = functions.https.onRequest(
   async (request, response) => {
+    const promises: Promise<any>[] = [];
     try {
-      const LegislatorsRef = db.collection('legislators');
       const updatedLegislators = await ny.getUpdatedMembers();
 
       updatedLegislators.forEach(async (e) => {
-        const snapshot = await LegislatorsRef.where(
-          'identifier',
-          '==',
-          e.identifier
-        ).get();
-        if (snapshot.empty) LegislatorsRef.add(e);
+        promises.push(db.doc(`legislators/${e.identifier}`).set(e));
       });
+
+      await Promise.all(promises);
     } catch (error) {
       functions.logger.error(error);
     }
