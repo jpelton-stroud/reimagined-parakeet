@@ -8,35 +8,46 @@ admin.initializeApp();
 const db = admin.firestore();
 
 export const test = functions.https.onRequest(async (request, response) => {
-  try {
-    const colRef = db.collection('legislation');
-    const snapshot = await colRef.get();
-    if (snapshot.empty) throw new Error(`no bills to update!`);
-    snapshot.forEach(async (doc) => {
-      const bill: Legislation = doc.data() as Legislation;
-      const billData: Legislation = await ny.getBillData(bill);
-      const promises: Promise<any>[] = [colRef.doc(doc.id).set(billData)];
+  // try {
+  //   const colRef = db.collection('legislation');
+  //   const snapshot = await colRef.get();
+  //   if (snapshot.empty) throw new Error(`no bills to update!`);
+  //   else {
+  //     snapshot.forEach(async (doc) => {
+  //       const bill: Legislation = doc.data() as Legislation;
+  //       const billData: Legislation = await ny.getBillData(bill);
 
-      const sponsorship: Sponsorship = {
-        name: bill.name,
-        identifier: bill.identifier,
-        version: billData.version,
-        date: '',
-      };
+  //       const sponsorship: Sponsorship = {
+  //         name: bill.name,
+  //         identifier: bill.identifier,
+  //         version: billData.version,
+  //         date: '',
+  //       };
 
-      billData.sponsorships.forEach((sponsor: Sponsorship) => {
-        const id: string = `legislators/${sponsor.identifier}`;
-        promises.push(updateSponsorships(id, sponsorship));
-      });
-
-      await Promise.all(promises);
-    });
-  } catch (error) {
-    functions.logger.error(error);
-  }
+  //       await batchSponsorshipUpdates(billData.sponsorships, sponsorship);
+  //       await colRef.doc(doc.id).set(billData);
+  //     });
+  //   }
+  // } catch (error) {
+  //   functions.logger.error(error);
+  // }
 
   response.send(`test run completed @ ${new Date()}`);
 });
+
+function batchSponsorshipUpdates(
+  sponsorList: Sponsorship[],
+  data: Sponsorship
+): Promise<any> {
+  const sponsorBatch = db.batch();
+  sponsorList.forEach((sponsor) => {
+    sponsorBatch.update(db.doc(`legislators/${sponsor.identifier}`), {
+      sponsorships: admin.firestore.FieldValue.arrayUnion(data),
+    });
+  });
+
+  return sponsorBatch.commit();
+}
 
 export const updateBills = functions.pubsub
   .schedule('every 3 hours from 06:00 to 19:00')
@@ -46,25 +57,22 @@ export const updateBills = functions.pubsub
       const colRef = db.collection('legislation');
       const snapshot = await colRef.get();
       if (snapshot.empty) throw new Error(`no bills to update!`);
-      snapshot.forEach(async (doc) => {
-        const bill: Legislation = doc.data() as Legislation;
-        const billData: Legislation = await ny.getBillData(bill);
-        const promises: Promise<any>[] = [colRef.doc(doc.id).set(billData)];
+      else {
+        snapshot.forEach(async (doc) => {
+          const bill: Legislation = doc.data() as Legislation;
+          const billData: Legislation = await ny.getBillData(bill);
 
-        const sponsorship: Sponsorship = {
-          name: bill.name,
-          identifier: bill.identifier,
-          version: billData.version,
-          date: '',
-        };
+          const sponsorship: Sponsorship = {
+            name: bill.name,
+            identifier: bill.identifier,
+            version: billData.version,
+            date: '',
+          };
 
-        billData.sponsorships.forEach((sponsor: Sponsorship) => {
-          const id: string = `legislators/${sponsor.identifier}`;
-          promises.push(updateSponsorships(id, sponsorship));
+          await batchSponsorshipUpdates(billData.sponsorships, sponsorship);
+          await colRef.doc(doc.id).set(billData);
         });
-
-        await Promise.all(promises);
-      });
+      }
     } catch (error) {
       functions.logger.error(error);
     }
