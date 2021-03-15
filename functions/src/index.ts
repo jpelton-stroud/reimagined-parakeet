@@ -125,7 +125,7 @@ export const updateLegislators = functions.https.onRequest(
         batch.set(db.doc(`legislators/${e.identifier}`), e);
       });
 
-      batch.commit();
+      await batch.commit();
     } catch (error) {
       functions.logger.error(error);
     }
