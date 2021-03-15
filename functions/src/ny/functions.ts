@@ -46,7 +46,6 @@ function generateMemberId(m: API.Member): string {
 }
 
 export async function getBillData(oldBill: Legislation) {
-  console.log(`getting ${oldBill.identifier}`);
   options.searchParams = `key=${APIKEY}`;
 
   const idParts = oldBill.identifier.split('-');
