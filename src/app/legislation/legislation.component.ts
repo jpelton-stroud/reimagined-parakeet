@@ -21,6 +21,7 @@ export class LegislationComponent implements OnInit {
     title: '',
     creator_id: '',
     version: '',
+    updated_at: '',
   };
 
   constructor(

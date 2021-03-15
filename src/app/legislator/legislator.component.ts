@@ -19,6 +19,7 @@ export class LegislatorComponent implements OnInit {
     identifier: '',
     chamber: '',
     sponsorships: [],
+    updated_at: '',
   };
 
   constructor(
