@@ -1,5 +1,4 @@
-import got from 'got';
-import { Options } from 'got';
+import got, { Options } from 'got';
 
 import { APIKEY } from './api-key';
 import * as API from './types/nysenate-api';
