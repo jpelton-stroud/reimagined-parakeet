@@ -8,5 +8,6 @@ export interface Sponsorship {
 export interface Shared {
   identifier: string;
   name: string;
+  updated_at: string;
   sponsorships: Sponsorship[];
 }

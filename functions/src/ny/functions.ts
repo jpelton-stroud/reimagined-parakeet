@@ -37,6 +37,7 @@ function mapToLegislator(m: API.Member): Legislator {
     chamber: m.chamber,
     identifier: generateMemberId(m),
     name: m.fullName,
+    updated_at: new Date().toISOString(),
     sponsorships: [],
   };
 }
@@ -69,6 +70,7 @@ function mapToLegislation(e: API.Bill, n: string): Legislation {
     sponsors.push(mapToSponsorship(e2, e.activeVersion));
   });
   return {
+    updated_at: new Date().toISOString(),
     creator_id: generateMemberId(e.sponsor.member),
     identifier: e.basePrintNoStr,
     title: e.title,
