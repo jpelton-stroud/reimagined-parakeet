@@ -1,4 +1,10 @@
 import { Component } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+
+interface test {
+  name: string;
+}
 
 @Component({
   selector: 'app-root',

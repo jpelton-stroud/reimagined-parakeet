@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "tracker-cwapolitical-org"
+  },
+  "targets": {
+    "tracker-cwapolitical-org": {
+      "hosting": {
+        "legislative-tracker": [
+          "tracker-cwapolitical-org"
+        ]
+      }
+    }
   }
 }

@@ -4,6 +4,10 @@
 
 export const environment = {
   production: false,
+  emulator: true,
+  firebase: {
+    projectId: 'tracker-cwapolitical-org',
+  },
 };
 
 /*

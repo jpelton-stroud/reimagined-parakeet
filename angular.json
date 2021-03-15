@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "cli": {
-    "analytics": "ee07eec6-15f5-4e2c-a48d-8b9ba4bfd156"
+    "analytics": "d042ddec-3d76-4227-866c-7d4e7e4d97ac"
   },
   "version": 1,
   "newProjectRoot": "projects",
@@ -23,14 +23,14 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/legislative-tracker",
+            "outputPath": "dist/app",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.sass"],
+            "styles": ["src/custom-theme.scss", "src/styles.sass"],
             "scripts": []
           },
           "configurations": {
@@ -109,6 +109,10 @@
               "devServerTarget": "legislative-tracker:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
     }

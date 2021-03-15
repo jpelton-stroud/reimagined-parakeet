@@ -1,11 +1,14 @@
+EMU_DATA/
+
+# API Key files
+api-key.ts
+
 # Compiled JavaScript files
-lib/**/*.js
-lib/**/*.js.map
+lib
+dist
 
 # TypeScript v1 declaration files
 typings/
 
 # Node.js dependency directory
 node_modules/
-
-*.log

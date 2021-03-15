@@ -1,0 +1,16 @@
+<h2>
+  {{ bill.name }}
+</h2>
+<span>{{ bill.identifier }}</span>
+<span>{{ bill.version }}</span>
+<span>{{ bill.title }}</span>
+<span>{{ bill.creator_id }}</span>
+
+<span></span>
+<br />
+<h3>Sponsors</h3>
+<app-list-view
+  [items]="bill.sponsorships"
+  [linkHeader]="'/legislators'"
+  [displayedColumns]="['name', 'date']"
+></app-list-view>
