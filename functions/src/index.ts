@@ -110,14 +110,14 @@ async function updateSponsorships(
 export const updateLegislators = functions.https.onRequest(
   async (request, response) => {
     try {
-      const promises: Promise<any>[] = [];
       const updatedLegislators = await ny.getUpdatedMembers();
+      const batch = db.batch();
 
       updatedLegislators.forEach(async (e) => {
-        promises.push(db.doc(`legislators/${e.identifier}`).set(e));
+        batch.set(db.doc(`legislators/${e.identifier}`), e);
       });
 
-      await Promise.all(promises);
+      batch.commit();
     } catch (error) {
       functions.logger.error(error);
     }
