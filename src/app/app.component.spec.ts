@@ -16,10 +16,10 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'legislative-tracker'`, () => {
+  it(`should have as title 'tracker-cwapolitical-org'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('legislative-tracker');
+    expect(app.title).toEqual('tracker-cwapolitical-org');
   });
 
   it('should render title', () => {
@@ -27,7 +27,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
     expect(compiled.querySelector('.content span').textContent).toContain(
-      'legislative-tracker app is running!'
+      'tracker-cwapolitical-org app is running!'
     );
   });
 });

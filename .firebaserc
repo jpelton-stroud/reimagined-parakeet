@@ -5,7 +5,7 @@
   "targets": {
     "tracker-cwapolitical-org": {
       "hosting": {
-        "legislative-tracker": [
+        "tracker-cwapolitical-org": [
           "tracker-cwapolitical-org"
         ]
       }

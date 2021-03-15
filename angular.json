@@ -6,7 +6,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "legislative-tracker": {
+    "tracker-cwapolitical-org": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -66,18 +66,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "legislative-tracker:build"
+            "browserTarget": "tracker-cwapolitical-org:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "legislative-tracker:build:production"
+              "browserTarget": "tracker-cwapolitical-org:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "legislative-tracker:build"
+            "browserTarget": "tracker-cwapolitical-org:build"
           }
         },
         "test": {
@@ -102,11 +102,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "legislative-tracker:serve"
+            "devServerTarget": "tracker-cwapolitical-org:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "legislative-tracker:serve:production"
+              "devServerTarget": "tracker-cwapolitical-org:serve:production"
             }
           }
         },
@@ -117,5 +117,5 @@
       }
     }
   },
-  "defaultProject": "legislative-tracker"
+  "defaultProject": "tracker-cwapolitical-org"
 }

@@ -12,5 +12,5 @@ interface test {
   styleUrls: ['./app.component.sass'],
 })
 export class AppComponent {
-  title = 'legislative-tracker';
+  title = 'tracker-cwapolitical-org';
 }
