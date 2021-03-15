@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "serve": "npm run build && firebase emulators:start --import=EMU_DATA --export-on-exit",
+    "serve": "npm run build && firebase emulators:start --only firestore,functions --import=EMU_DATA --export-on-exit",
     "format": "npx prettier --write .",
     "lint": "eslint --ext .ts .",
     "build": "npm run lint && tsc",
