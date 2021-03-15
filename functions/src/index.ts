@@ -12,11 +12,24 @@ export const test = functions.https.onRequest(async (request, response) => {
     const colRef = db.collection('legislation');
     const snapshot = await colRef.get();
     if (snapshot.empty) throw new Error(`no bills to update!`);
-
     snapshot.forEach(async (doc) => {
-      const oldBill: Legislation = doc.data() as Legislation;
-      const newBill: Legislation = await ny.getBillData(oldBill);
-      colRef.doc(doc.id).set(newBill);
+      const bill: Legislation = doc.data() as Legislation;
+      const billData: Legislation = await ny.getBillData(bill);
+      const promises: Promise<any>[] = [colRef.doc(doc.id).set(billData)];
+
+      const sponsorship: Sponsorship = {
+        name: bill.name,
+        identifier: bill.identifier,
+        version: billData.version,
+        date: '',
+      };
+
+      billData.sponsorships.forEach((sponsor: Sponsorship) => {
+        const id: string = `legislators/${sponsor.identifier}`;
+        promises.push(updateSponsorships(id, sponsorship));
+      });
+
+      await Promise.all(promises);
     });
   } catch (error) {
     functions.logger.error(error);
@@ -24,6 +37,38 @@ export const test = functions.https.onRequest(async (request, response) => {
 
   response.send(`test run completed @ ${new Date()}`);
 });
+
+export const updateBills = functions.pubsub
+  .schedule('every 3 hours from 06:00 to 19:00')
+  .timeZone('America/New_York')
+  .onRun(async (context) => {
+    try {
+      const colRef = db.collection('legislation');
+      const snapshot = await colRef.get();
+      if (snapshot.empty) throw new Error(`no bills to update!`);
+      snapshot.forEach(async (doc) => {
+        const bill: Legislation = doc.data() as Legislation;
+        const billData: Legislation = await ny.getBillData(bill);
+        const promises: Promise<any>[] = [colRef.doc(doc.id).set(billData)];
+
+        const sponsorship: Sponsorship = {
+          name: bill.name,
+          identifier: bill.identifier,
+          version: billData.version,
+          date: '',
+        };
+
+        billData.sponsorships.forEach((sponsor: Sponsorship) => {
+          const id: string = `legislators/${sponsor.identifier}`;
+          promises.push(updateSponsorships(id, sponsorship));
+        });
+
+        await Promise.all(promises);
+      });
+    } catch (error) {
+      functions.logger.error(error);
+    }
+  });
 
 export const getNewBillData = functions.firestore
   .document('legislation/{docId}')
