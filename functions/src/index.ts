@@ -118,8 +118,8 @@ async function updateSponsorships(
 export const updateLegislators = functions.https.onRequest(
   async (request, response) => {
     try {
-      const updatedLegislators = await ny.getUpdatedMembers();
       const batch = db.batch();
+      const updatedLegislators = await ny.getUpdatedMemberList();
 
       updatedLegislators.forEach(async (e) => {
         batch.set(db.doc(`legislators/${e.identifier}`), e);

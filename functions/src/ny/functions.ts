@@ -12,11 +12,11 @@ const options: Options = {
   resolveBodyOnly: true,
 };
 
-export async function getUpdatedMembers() {
+export async function getUpdatedMemberList() {
   options.searchParams = `key=${APIKEY}&full=true&limit=1000`;
   try {
     const mapped: Legislator[] = [];
-    const res = await got(`api/3/members`, options);
+    const res = await got(`api/3/members/${new Date().getFullYear()}`, options);
     if (!API.isSuccess(res)) throw new Error('API Response was Error');
     if (!API.isItemsList<API.Member>(res.result))
       throw new Error('API Response is not a List');
