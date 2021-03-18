@@ -133,3 +133,31 @@ export const updateLegislators = functions.https.onRequest(
     response.send(`test run completed @ ${new Date()}`);
   }
 );
+
+export const forceBillUpdates = functions.https.onRequest(
+  async (request, response) => {
+    try {
+      const snapshot = await db.collection('legislation').get();
+      if (snapshot.empty) throw new Error('nothing to update!');
+      else {
+        snapshot.forEach(async (billRef) => {
+          const bill: Legislation = billRef.data() as Legislation;
+          const data: Legislation = await ny.getBillData(bill);
+          const sponsorship: Sponsorship = {
+            name: bill.name,
+            identifier: bill.identifier,
+            version: data.version,
+            date: '',
+          };
+          await batchSponsorshipUpdates(data.sponsorships, sponsorship);
+          await db.collection('legislation').doc(billRef.id).set(data);
+        });
+      }
+    } catch (error) {
+      functions.logger.error(error);
+    }
+    response.send(
+      `forced bill update completed at ${new Date().toISOString()}`
+    );
+  }
+);
