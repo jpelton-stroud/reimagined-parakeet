@@ -126,11 +126,13 @@ export const updateLegislators = functions.https.onRequest(
       });
 
       await batch.commit();
+      response.send(`Legislator update completed @ ${new Date()}`);
     } catch (error) {
       functions.logger.error(error);
+      response.send(
+        `Legislator update completed with error "${error}" @ ${new Date()}`
+      );
     }
-
-    response.send(`test run completed @ ${new Date()}`);
   }
 );
 
@@ -151,13 +153,14 @@ export const forceBillUpdates = functions.https.onRequest(
           };
           await batchSponsorshipUpdates(data.sponsorships, sponsorship);
           await db.collection('legislation').doc(billRef.id).set(data);
+          response.send(`forced bill update completed @ ${new Date()}`);
         });
       }
     } catch (error) {
       functions.logger.error(error);
+      response.send(
+        `forced bill update completed with error "${error}" @ ${new Date()}`
+      );
     }
-    response.send(
-      `forced bill update completed at ${new Date().toISOString()}`
-    );
   }
 );
