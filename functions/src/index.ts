@@ -3,9 +3,15 @@ import * as functions from 'firebase-functions';
 import { Legislation } from './app/legislation';
 import { Sponsorship } from './app/shared';
 import * as ny from './ny/functions';
+import * as fn from './ny/functions2';
 
 admin.initializeApp();
 const db = admin.firestore();
+
+export const test2 = functions.https.onRequest(async (request, response) => {
+  fn.test();
+  response.send();
+});
 
 export const test = functions.https.onRequest(async (request, response) => {
   // try {
