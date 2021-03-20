@@ -7,7 +7,7 @@ interface Meta {
 }
 
 interface Success<T> extends Meta {
-  result: T | Items<T>;
+  result: T;
   total?: number;
   offsetStart?: number;
   offsetEnd?: number;
@@ -18,7 +18,7 @@ interface Failure extends Meta {
   errorCode: number;
 }
 
-export type Response<T = unknown> = Success<T> | Failure;
-export function isSuccess(o: unknown): o is Success<unknown> {
-  return (o as Response).success === true;
+export type Response<T> = Success<T> | Failure;
+export function isSuccess<T>(o: Response<T>): o is Success<T> {
+  return o.success;
 }
