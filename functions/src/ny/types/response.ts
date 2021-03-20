@@ -1,5 +1,3 @@
-import { Items } from './shared';
-
 interface Meta {
   success: boolean;
   message: string;
