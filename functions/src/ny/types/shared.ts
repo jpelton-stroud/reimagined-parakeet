@@ -3,6 +3,6 @@ export interface Items<T> {
   size: number;
 }
 
-export function isItemsList<T>(o: unknown | unknown[]): o is Items<T[]> {
-  return (o as Items<T[]>).items.length !== undefined;
+export function isItemsList<T>(o: unknown): o is Items<T[]> {
+  return (o as Items<T[]>).items?.length !== undefined;
 }
