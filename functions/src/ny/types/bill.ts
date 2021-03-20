@@ -30,5 +30,5 @@ interface BillId {
 }
 
 export function isBill(e: unknown): e is Bill {
-  return (e as Bill).amendments !== undefined;
+  return (e as Bill).activeVersion !== undefined;
 }
