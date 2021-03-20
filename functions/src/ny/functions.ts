@@ -16,7 +16,10 @@ export async function getUpdatedMemberList() {
   options.searchParams = `key=${APIKEY}&full=true&limit=1000`;
   try {
     const mapped: Legislator[] = [];
-    const res = await got(`api/3/members/${new Date().getFullYear()}`, options);
+    const res = (await got(
+      `api/3/members/${new Date().getFullYear()}`,
+      options
+    )) as API.Response<API.Member>;
     if (!API.isSuccess(res)) throw new Error('API Response was Error');
     if (!API.isItemsList<API.Member>(res.result))
       throw new Error('API Response is not a List');
@@ -52,7 +55,7 @@ export async function getBillData(oldBill: Legislation) {
   const idParts = oldBill.identifier.split('-');
   const apiPath = `api/3/bills/${idParts.pop()}/${idParts.pop()}`;
   try {
-    const res = await got(apiPath, options);
+    const res = (await got(apiPath, options)) as API.Response<API.Bill>;
     if (!API.isSuccess(res)) throw new Error('API Response was Error');
     if (!API.isBill(res.result)) throw new Error('API Response not a bill');
     return mapToLegislation(res.result, oldBill.name);

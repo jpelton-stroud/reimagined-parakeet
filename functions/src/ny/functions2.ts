@@ -5,7 +5,6 @@ import * as API from './types/nysenate-api';
 import { Legislator } from '../app/legislator';
 import { Legislation } from '../app/legislation';
 import { Sponsorship } from '../app/shared';
-import { UpdateDetail } from './types/updates';
 
 // set api fetch defaults
 const gotOptions: Options = {
@@ -15,28 +14,28 @@ const gotOptions: Options = {
 };
 
 // Fetch data for a single bill from API
-async function fetchBillInfo(target: string): Promise<API.Response> {
+async function fetchBillInfo(target: string): Promise<API.Response<API.Bill>> {
   gotOptions.url = `bills/${target}`;
   gotOptions.searchParams = new URLSearchParams([
     ['key', APIKEY],
     ['view', 'info'],
   ]);
 
-  return got(gotOptions) as Promise<API.Response>;
+  return got(gotOptions) as Promise<API.Response<API.Bill>>;
 }
 
 // Fetch a list of updates to a bill from API
-async function fetchBillUpdates(
+async function fetchBillUpdates<T>(
   target: string,
   date?: string
-): Promise<API.Response> {
+): Promise<API.Response<T>> {
   gotOptions.url = `bills/${target}/updates${date ? '/' + date : ''}`;
   gotOptions.searchParams = new URLSearchParams([
     ['key', APIKEY],
     ['limit', '5'],
   ]);
 
-  return got(gotOptions) as Promise<API.Response>;
+  return got(gotOptions) as Promise<API.Response<T>>;
 }
 
 // Fetch a list of current legislators from API
@@ -56,12 +55,8 @@ async function fetchCurrentMembers(
 }
 
 // Validate & unpack API response
-function unpackResponse(d: API.Response) {
-  return !API.isSuccess(d)
-    ? new Error(d.message)
-    : API.isItemsList(d.result)
-    ? d.result.items
-    : d.result;
+function unpackResponse<T>(d: API.Response<T>) {
+  return !API.isSuccess(d) ? new Error(d.message) : d.result;
 }
 
 function typeCheck(d: unknown) {
@@ -77,13 +72,14 @@ function typeCheck(d: unknown) {
 export const test = async (billNo: string = 'S1034-2021') => {
   const part = billNo.split('-');
   const promises: Promise<any>[] = [];
-  promises.push(fetchBillInfo(`${part[1]}/${part[0]}`));
-  promises.push(fetchBillUpdates(`${part[1]}/${part[0]}`));
-  promises.push(fetchCurrentMembers());
+  // promises.push(fetchBillInfo(`${part[1]}/${part[0]}`));
+  // promises.push(fetchBillUpdates(`${part[1]}/${part[0]}`));
+  // promises.push(fetchCurrentMembers());
 
   try {
-    const raw = await Promise.all(promises);
-    const unpacked = raw.map((e) => unpackResponse(e));
+    // const raw = await Promise.all(promises);
+    const raw = await fetchCurrentMembers();
+    const unpacked = unpackResponse(raw);
 
     console.log(unpacked);
   } catch (error) {
