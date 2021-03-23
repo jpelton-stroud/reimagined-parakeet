@@ -14,7 +14,7 @@ const gotOptions: Options = {
 };
 
 // Fetch data for a single bill from API
-async function fetchBillInfo(target: string): Promise<API.Response<API.Bill>> {
+function fetchBillInfo(target: string): Promise<API.Response<API.Bill>> {
   gotOptions.url = `bills/${target}`;
   gotOptions.searchParams = new URLSearchParams([
     ['key', APIKEY],
@@ -25,21 +25,21 @@ async function fetchBillInfo(target: string): Promise<API.Response<API.Bill>> {
 }
 
 // Fetch a list of updates to a bill from API
-async function fetchBillUpdates<T>(
+function fetchBillUpdates(
   target: string,
   date?: string
-): Promise<API.Response<T>> {
+): Promise<API.Response<API.UpdateDetail[]>> {
   gotOptions.url = `bills/${target}/updates${date ? '/' + date : ''}`;
   gotOptions.searchParams = new URLSearchParams([
     ['key', APIKEY],
-    ['limit', '5'],
+    ['limit', '1000'],
   ]);
 
-  return got(gotOptions) as Promise<API.Response<T>>;
+  return got(gotOptions) as Promise<API.Response<API.UpdateDetail[]>>;
 }
 
 // Fetch a list of current legislators from API
-async function fetchCurrentMembers(
+function fetchCurrentMembers(
   full: boolean = false,
   year: number = new Date().getFullYear(),
   chamber?: string
@@ -54,34 +54,26 @@ async function fetchCurrentMembers(
   return got(gotOptions) as Promise<API.Response<API.Member[]>>;
 }
 
-// Validate & unpack API response
-function unpackResponse<T>(d: API.Response<T>) {
-  return !API.isSuccess(d) ? new Error(d.message) : d.result;
-}
-
-function typeCheck(d: unknown) {
-  return API.isBill(d);
-}
-
 // Transform bill data fetched from API to Popolo Motion
 // Transform list of legislators fetched from API to list of Popolo Persons
-
-// Sort list of bill updates
+// Transform list of bill updates
+function processUpdateDetails(
+  updateList: API.UpdateDetail[],
+  memberList: API.Member[]
+) {}
 
 // exported triggers
 export const test = async (billNo: string = 'S1034-2021') => {
-  const part = billNo.split('-');
-  const promises: Promise<any>[] = [];
-  // promises.push(fetchBillInfo(`${part[1]}/${part[0]}`));
-  // promises.push(fetchBillUpdates(`${part[1]}/${part[0]}`));
-  // promises.push(fetchCurrentMembers());
-
   try {
-    // const raw = await Promise.all(promises);
-    const raw = await fetchCurrentMembers();
-    const unpacked = unpackResponse(raw);
+    const part = billNo.split('-');
+    const fetchedData = await Promise.all([
+      // fetchBillInfo(`${part[1]}/${part[0]}`).then(API.unpack),
+      fetchBillUpdates(`${part[1]}/${part[0]}`).then(API.unpack),
+      fetchCurrentMembers().then(API.unpack),
+    ]);
 
-    console.log(unpacked);
+    processUpdateDetails(...fetchedData);
+    console.log(fetchedData);
   } catch (error) {
     console.log(error);
   }
