@@ -29,10 +29,11 @@ function fetchBillUpdates(
   target: string,
   date?: string
 ): Promise<API.Response<API.UpdateDetail[]>> {
-  gotOptions.url = `bills/${target}/updates${date ? '/' + date : ''}`;
+  gotOptions.url = ['bills', target, 'updates', date].join('/');
   gotOptions.searchParams = new URLSearchParams([
     ['key', APIKEY],
     ['limit', '1000'],
+    ['filter', 'cosponsor'],
   ]);
 
   return got(gotOptions) as Promise<API.Response<API.UpdateDetail[]>>;
@@ -40,15 +41,14 @@ function fetchBillUpdates(
 
 // Fetch a list of current legislators from API
 function fetchCurrentMembers(
-  full: boolean = false,
   year: number = new Date().getFullYear(),
   chamber?: string
 ): Promise<API.Response<API.Member[]>> {
-  gotOptions.url = `members/${year}${chamber ? '/' + chamber : ''}`;
+  gotOptions.url = ['members', year, chamber].join('/');
   gotOptions.searchParams = new URLSearchParams([
     ['key', APIKEY],
-    ['limit', '5'],
-    ['full', full ? 'full' : 'false'],
+    ['limit', '1000'],
+    ['full', 'true'],
   ]);
 
   return got(gotOptions) as Promise<API.Response<API.Member[]>>;
@@ -56,25 +56,58 @@ function fetchCurrentMembers(
 
 // Transform bill data fetched from API to Popolo Motion
 // Transform list of legislators fetched from API to list of Popolo Persons
+
 // Transform list of bill updates
 function processUpdateDetails(
-  updateList: API.UpdateDetail[],
-  memberList: API.Member[]
-) {}
+  rawUpdates: API.UpdateDetail[],
+  rawMembers: API.Member[]
+) {
+  const sorted: { [key: string]: Sponsorship[] } = {
+    Insert: [],
+    Delete: [],
+  };
+  rawUpdates.forEach((e: API.UpdateDetail) => {
+    if (e.action !== 'Update') {
+      const member = rawMembers.find(
+        (m) => e.fields['Session Member Id'] === m.sessionMemberId.toString()
+      );
+      member === undefined
+        ? console.error(
+            `sessionMemberId ${e.fields['Session Member Id']} not found`,
+            e.id.basePrintNoStr
+          )
+        : sorted[e.action].push({
+            name: member.fullName,
+            identifier: generateLegislatorIdentifier(member),
+            date: e.fields['Created Date Time'],
+            version:
+              e.fields['Bill Amend Version'] !== ' '
+                ? e.fields['Bill Amend Version']
+                : '',
+          });
+    }
+  });
+
+  return sorted;
+}
+
+function generateLegislatorIdentifier(m: API.Member): string {
+  return `${m.shortName}-${m.chamber}-${m.memberId}-${m.sessionMemberId}`;
+}
 
 // exported triggers
-export const test = async (billNo: string = 'S1034-2021') => {
+export const getBillSponsorshipUpdates = async (
+  billNo: string = 'A2681-2021'
+) => {
   try {
-    const part = billNo.split('-');
     const fetchedData = await Promise.all([
-      // fetchBillInfo(`${part[1]}/${part[0]}`).then(API.unpack),
-      fetchBillUpdates(`${part[1]}/${part[0]}`).then(API.unpack),
+      fetchBillUpdates(billNo.split('-').reverse().join('/')).then(API.unpack),
       fetchCurrentMembers().then(API.unpack),
     ]);
 
-    processUpdateDetails(...fetchedData);
-    console.log(fetchedData);
+    return processUpdateDetails(...fetchedData);
   } catch (error) {
     console.log(error);
+    return;
   }
 };

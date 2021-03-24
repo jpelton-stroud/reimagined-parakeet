@@ -9,8 +9,9 @@ admin.initializeApp();
 const db = admin.firestore();
 
 export const test2 = functions.https.onRequest(async (request, response) => {
-  fn.test();
-  response.send();
+  console.log(await fn.getBillSponsorshipUpdates());
+
+  response.send('done');
 });
 
 export const test = functions.https.onRequest(async (request, response) => {
