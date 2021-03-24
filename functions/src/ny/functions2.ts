@@ -40,7 +40,7 @@ function fetchBillUpdates(
 }
 
 // Fetch a list of current legislators from API
-function fetchCurrentMembers(
+function fetchMembers(
   year: number = new Date().getFullYear(),
   chamber?: string
 ): Promise<API.Response<API.Member[]>> {
@@ -55,9 +55,26 @@ function fetchCurrentMembers(
 }
 
 // Transform bill data fetched from API to Popolo Motion
-// Transform list of legislators fetched from API to list of Popolo Persons
+const billToMotion = (bill: API.Bill): Legislation => ({
+  name: '',
+  identifier: bill.basePrintNoStr,
+  version: bill.activeVersion,
+  title: bill.title,
+  creator_id: generateLegislatorIdentifier(bill.sponsor.member),
+  sponsorships: [],
+  updated_at: '',
+});
 
-// Transform list of bill updates
+// Transform member data fetched from API to Popolo Person
+const memberToPerson = (m: API.Member): Legislator => ({
+  identifier: generateLegislatorIdentifier(m),
+  chamber: m.chamber,
+  name: m.fullName,
+  updated_at: new Date().toJSON(),
+  sponsorships: [],
+});
+
+// Transform list of bill cosponsor updates
 function processUpdateDetails(
   rawUpdates: API.UpdateDetail[],
   rawMembers: API.Member[]
@@ -66,43 +83,28 @@ function processUpdateDetails(
     Insert: [],
     Delete: [],
   };
-  rawUpdates.forEach((e: API.UpdateDetail) => {
-    if (e.action !== 'Update') {
-      const member = rawMembers.find(
-        (m) => e.fields['Session Member Id'] === m.sessionMemberId.toString()
+  rawUpdates.forEach((u: API.UpdateDetail) => {
+    if (u.action !== 'Update') {
+      const m = rawMembers.find(
+        (m) => u.fields['Session Member Id'] === m.sessionMemberId.toString()
       );
-      member === undefined
+      m === undefined
         ? console.error(
-            `sessionMemberId ${e.fields['Session Member Id']} not found`,
-            e.id.basePrintNoStr
+            `${u.id.basePrintNoStr}: sessionMemberId ${u.fields['Session Member Id']} not found`
           )
-        : sorted[e.action].push({
-            name: member.fullName,
-            identifier: generateLegislatorIdentifier(member),
-            date: e.fields['Created Date Time'],
-            version:
-              e.fields['Bill Amend Version'] !== ' '
-                ? e.fields['Bill Amend Version']
-                : '',
-          });
+        : sorted[u.action].push({ ...mSlug(m), ...vSlug(u) });
     }
   });
 
   return sorted;
 }
 
-function generateLegislatorIdentifier(m: API.Member): string {
-  return `${m.shortName}-${m.chamber}-${m.memberId}-${m.sessionMemberId}`;
-}
-
 // exported triggers
-export const getBillSponsorshipUpdates = async (
-  billNo: string = 'A2681-2021'
-) => {
+export const getBillSponsorshipUpdates = async (billNo: string) => {
   try {
     const fetchedData = await Promise.all([
-      fetchBillUpdates(billNo.split('-').reverse().join('/')).then(API.unpack),
-      fetchCurrentMembers().then(API.unpack),
+      fetchBillUpdates(parseBillStr(billNo)).then(API.unpack),
+      fetchMembers().then(API.unpack),
     ]);
 
     return processUpdateDetails(...fetchedData);
@@ -111,3 +113,28 @@ export const getBillSponsorshipUpdates = async (
     return;
   }
 };
+
+export const getBill = (billNo: string): Promise<Legislation> =>
+  fetchBillInfo(parseBillStr(billNo)).then(API.unpack).then(billToMotion);
+
+export const getMembers = (): Promise<Legislator[]> =>
+  fetchMembers()
+    .then(API.unpack)
+    .then((list) => list.map(memberToPerson));
+
+// helpers
+const parseBillStr = (basePrintNoStr: string) =>
+  basePrintNoStr.split('-').reverse().join('/');
+const generateLegislatorIdentifier = (m: API.Member) =>
+  `${m.shortName}-${m.chamber}-${m.memberId}-${m.sessionMemberId}`;
+const mSlug = (m: API.Member) => ({
+  name: m.fullName,
+  identifier: generateLegislatorIdentifier(m),
+});
+const vSlug = (f: API.UpdateDetail) => ({
+  date: f.fields['Created Date Time'],
+  version:
+    f.fields['Bill Amend Version'] !== ' '
+      ? f.fields['Bill Amend Version']
+      : '',
+});

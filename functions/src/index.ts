@@ -9,7 +9,8 @@ admin.initializeApp();
 const db = admin.firestore();
 
 export const test2 = functions.https.onRequest(async (request, response) => {
-  console.log(await fn.getBillSponsorshipUpdates());
+  // console.log(await fn.getBill('A2681-2021'));
+  console.log(await fn.getMembers());
 
   response.send('done');
 });
