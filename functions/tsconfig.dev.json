@@ -1,3 +1,10 @@
 {
-  "include": [".eslintrc.js"]
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "./dist",
+    "target": "es2020"
+  },
+  "compileOnSave": true,
+  "include": ["src", ".eslintrc.js"]
 }
