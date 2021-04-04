@@ -16,7 +16,7 @@ export async function getUpdatedMembers() {
   options.searchParams = `key=${APIKEY}&full=true&limit=1000`;
   try {
     const mapped: Legislator[] = [];
-    const res = await got(`api/3/members`, options);
+    const res = await got(`api/3/members/2021`, options);
     if (!API.isSuccess(res)) throw new Error('API Response was Error');
     if (!API.isItemsList<API.Member>(res.result))
       throw new Error('API Response is not a List');
