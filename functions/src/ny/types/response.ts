@@ -1,4 +1,4 @@
-import { isItemsList, Items } from './shared';
+import { isItemsList } from './shared';
 interface CommonFields {
   success: boolean;
   message: string;
